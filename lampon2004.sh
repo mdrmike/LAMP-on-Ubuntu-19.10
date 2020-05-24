@@ -49,11 +49,18 @@ END
 
 mkdir -p /var/www/html/$WEBSITE/{web,logs}
 
-cd /var/www/html/$WEBSITE/web/
-
-echo "<h1>Stackscript: Ubuntu 20.04 LAMP successfully installed.<h1/></html>" > index.html
-
-cd
+cat > /var/www/html/$WEBSITE/web/index.php <<EOL
+<html>
+  <head>
+   <title>Stackscript: Ubuntu 20.04 LAMP successfully installed.</title>
+  </head>
+  <body>
+    <h2>Stackscript: Ubuntu 20.04 LAMP successfully installed.</h2>
+    <p>Testing PHP...</p><hr />
+    <?php phpinfo(); ?> 
+  </body>
+</html>
+EOL
 
 rm /var/www/html/index.html
 
