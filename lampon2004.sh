@@ -80,7 +80,7 @@ service mysql restart
 apt -y install php libapache2-mod-php php-mysql 
 
 # adjust dir.conf to look for index.php 1st
-sed -ie "s/DirectoryIndex index.html index.cgi index.pl index.php index.xhtml indem/DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm/g" /etc/apache2/mods-enabled/dir.conf
+sed -ie "s/DirectoryIndex index.html index.cgi index.pl index.php index.xhtml indem/DirectoryIndex index.php index.html index.htm/g" /etc/apache2/mods-enabled/dir.conf
 
 # making directory for php? giving apache permissions to that log? restarting php
 mkdir /var/log/php
