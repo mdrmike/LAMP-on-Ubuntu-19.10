@@ -50,7 +50,7 @@ mkdir -p /var/www/html/$WEBSITE/{public_html,logs}
 
 cd /var/www/html/$WEBSITE/public_html/
 
-echo "<h1>Stackscript: Ubuntu 19.10 LAMP successfully installed.<h1/></html>" > index.html
+echo "<h1>Stackscript: Ubuntu 20.04 LAMP successfully installed.<h1/></html>" > index.html
 
 cd
 
