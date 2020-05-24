@@ -28,27 +28,27 @@ apt-get install apache2 -y
 # EDIT APACHE CONFIG
 sed -ie "s/KeepAlive Off/KeepAlive On/g" /etc/apache2/apache2.conf
 
-# COPY CONFIG TO NEW SITE:
+# COPY CONFIG TO NEW SITE:                                                      @TODO this is horrible. Use Apache tools so things work as expected.
 cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$WEBSITE.conf
 
 # CONFIGURE VHOST
 cat <<END >/etc/apache2/sites-available/$WEBSITE.conf
-<Directory /var/www/html/$WEBSITE/public_html>
+<Directory /var/www/html/$WEBSITE/web>
     Require all granted
 </Directory>
 <VirtualHost *:80>
         ServerName $WEBSITE
         ServerAlias www.$WEBSITE
         ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/html/$WEBSITE/public_html
+        DocumentRoot /var/www/html/$WEBSITE/web
         ErrorLog /var/www/html/$WEBSITE/logs/error.log
         CustomLog /var/www/html/$WEBSITE/logs/access.log combined
 </VirtualHost>
 END
 
-mkdir -p /var/www/html/$WEBSITE/{public_html,logs}
+mkdir -p /var/www/html/$WEBSITE/{web,logs}
 
-cd /var/www/html/$WEBSITE/public_html/
+cd /var/www/html/$WEBSITE/web/
 
 echo "<h1>Stackscript: Ubuntu 20.04 LAMP successfully installed.<h1/></html>" > index.html
 
