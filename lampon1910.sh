@@ -16,7 +16,6 @@ adduser $SSUSER sudo
 
 # UPDATES
 apt-get update -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o DPkg::options::="--force-confdef" -o DPkg::options::="--force-confold"  install grub-pc
 apt-get update -y
 
 # SET HOSTNAME	
