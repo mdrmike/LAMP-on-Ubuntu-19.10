@@ -15,15 +15,16 @@ echo "$SSUSER:$SSPASSWORD" | chpasswd
 adduser $SSUSER sudo
 
 # UPDATES
-apt-get update -y
-apt-get update -y
+apt -y update
+apt -y upgrade 
+apt -y autoremove
 
 # SET HOSTNAME	
 hostnamectl set-hostname $HOSTNAME
 echo "127.0.0.1   $HOSTNAME" >> /etc/hosts
 
 #INSTALL APACHE
-apt-get install apache2 -y
+apt -y install apache2
 
 # EDIT APACHE CONFIG
 sed -ie "s/KeepAlive Off/KeepAlive On/g" /etc/apache2/apache2.conf
@@ -69,14 +70,14 @@ systemctl restart apache2
 # Install MySQL Server in a Non-Interactive mode. Default root password will be "root"
 echo "mysql-server mysql-server/root_password password $DB_PASSWORD" | sudo debconf-set-selections
 echo "mysql-server mysql-server/root_password_again password $DB_PASSWORD" | sudo debconf-set-selections
-apt-get -y install mysql-server
+apt -y install mysql-server
 
 mysql -uroot -p$DB_PASSWORD -e "create database $DB_NAME"
 
 service mysql restart
  
 #installing php
-apt install -y php libapache2-mod-php php-mysql 
+apt -y install php libapache2-mod-php php-mysql 
 
 # adjust dir.conf to look for index.php 1st
 sed -ie "s/DirectoryIndex index.html index.cgi index.pl index.php index.xhtml indem/DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm/g" /etc/apache2/mods-enabled/dir.conf
