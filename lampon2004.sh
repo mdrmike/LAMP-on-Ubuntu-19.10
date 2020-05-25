@@ -8,6 +8,13 @@
 # <UDF name="db_password" Label="MySQL root Password" />
 # <UDF name="db_name" Label="Create Database" default="" example="Create database" />
 
+#<UDF name="UFW_ENABLE" Label="Enable Firewall?" oneOf="yes,no" default="yes" />
+# <UDF name="SETUP_F2B" Label="Fail2ban with (mostly) default configuration" oneOf="yes,no" default="yes" />
+# <UDF name="TIMEZONE" Label="TZ Database Timezone" default="America/Los_Angeles" example="America/Los_Angeles,America/Denver,America/Chicago,America/New_York" />
+
+#<UDF name="port_in_udp" Label="Firewall UDP Ports IN" example="" />
+#<UDF name="port_in_tcp" Label="Firewall TCP Ports IN" example="22,80,443" />
+
 
 # ADD SUDO USER
 adduser $SSUSER --disabled-password --gecos "" && \
@@ -22,6 +29,11 @@ apt -y autoremove
 # SET HOSTNAME	
 hostnamectl set-hostname $HOSTNAME
 echo "127.0.0.1   $HOSTNAME" >> /etc/hosts
+
+if [ -n "$TIMEZONE" ]; then
+  # Configure timezone
+  timedatectl set-timezone "$TIMEZONE"
+fi
 
 #INSTALL APACHE
 apt -y install apache2
@@ -92,3 +104,37 @@ sed -ie "s/DirectoryIndex index.html index.cgi index.pl index.php index.xhtml in
 # making directory for php? giving apache permissions to that log? restarting php
 mkdir /var/log/php
 chown www-data /var/log/php
+
+
+## Lockdown Firewall
+# see list of ports: https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers#Table_legend
+# default OUT/UDP: 53,67,68,137,138/udp Allow outbound DNS,dhcp,dhcp,netbios(SAMBA),netbios(SAMBA)/udp 
+# default OUT/TCP: 
+# default  IN/UDP:
+# default  IN/TCP:
+
+
+if [ "$UFW_ENABLE" == "yes" ]; then
+  apt -y install ufw
+  ufw --force reset
+  ufw default deny
+  # [ -n "$PORT_OUT_UDP" ] && ufw allow out "$PORT_OUT_UDP/udp"                   # Test for variable &&  Then Set UFW
+  # [ -n "$PORT_OUT_TCP" ] && ufw allow out "$PORT_OUT_TCP/tcp"                   # Test for variable &&  Then Set UFW
+  [ -n "$PORT_IN_UDP" ]  && ufw allow in "$PORT_IN_UDP/udp"                     # Test for variable &&  Then Set UFW
+  [ -n "$PORT_IN_TCP" ]  && ufw allow in "$PORT_IN_TCP/tcp"                     # Test for variable &&  Then Set UFW
+  ufw deny out to any
+  ufw logging on
+  ufw enable
+  #ufw status verbose
+fi
+
+## Setup Fail2Ban 
+if [ "$SETUP_F2B" == "yes" ]; then
+    apt install fail2ban -y
+    cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local
+    cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+    sed -ie "s/bantime.*600/bantime  = 6000/g" /etc/fail2ban/jail.local 
+    sed -ie "s/maxretry.*3/maxretry = 4/g" /etc/fail2ban/jail.local 
+    systemctl start fail2ban
+    systemctl enable fail2ban
+fi
