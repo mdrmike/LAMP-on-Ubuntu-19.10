@@ -95,11 +95,11 @@ if [ "$UFW_ENABLE" == "yes" ]; then
   apt -y install ufw
   ufw --force reset
   ufw default deny
-  # [ -n "$PORT_OUT_UDP" ] && ufw allow out "$PORT_OUT_UDP/udp"                   # Test for variable &&  Then Set UFW
-  # [ -n "$PORT_OUT_TCP" ] && ufw allow out "$PORT_OUT_TCP/tcp"                   # Test for variable &&  Then Set UFW
+  [ -n "$PORT_OUT_UDP" ] && ufw allow out "$PORT_OUT_UDP/udp"                   # Test for variable &&  Then Set UFW
+  [ -n "$PORT_OUT_TCP" ] && ufw allow out "$PORT_OUT_TCP/tcp"                   # Test for variable &&  Then Set UFW
   [ -n "$PORT_IN_UDP" ]  && ufw allow in "$PORT_IN_UDP/udp"                     # Test for variable &&  Then Set UFW
   [ -n "$PORT_IN_TCP" ]  && ufw allow in "$PORT_IN_TCP/tcp"                     # Test for variable &&  Then Set UFW
-  ufw deny out to any
+  [ -n "$PORT_OUT_TCP" ] || [ -n "$PORT_OUT_TCP" ] && ufw deny out to any
   ufw logging on
   ufw enable
   #ufw status verbose
@@ -110,8 +110,8 @@ if [ "$SETUP_F2B" == "yes" ]; then
     apt install fail2ban -y
     cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local
     cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-    sed -ie "s/bantime.*600/bantime  = 6000/g" /etc/fail2ban/jail.local 
-    sed -ie "s/maxretry.*3/maxretry = 4/g" /etc/fail2ban/jail.local 
+    sed -ie "s/bantime.*10m/bantime  = 1h/g" /etc/fail2ban/jail.local 
+    sed -ie "s/maxretry.*5/maxretry = 4/g" /etc/fail2ban/jail.local 
     systemctl start fail2ban
     systemctl enable fail2ban
 fi
@@ -121,5 +121,7 @@ fi
 useradd -m "$SSUSER" -U --groups sudo && \
 echo "$SSUSER:$SSPASSWORD" | chpasswd
 ln -s /var/www  "/home/$SSUSER/"
-chown -R "$SSUSER:www-data" "/var/www/html/$WEBSITE"
-chmod -R u+srwX,g=srX,o= "/var/www/html/$WEBSITE"
+chown "$SSUSER:www-data" "/var/www/html/$WEBSITE"
+chown "$SSUSER:www-data" "/var/www/html/$WEBSITE/web"
+chmod u+srwX,g=srX,o= "/var/www/html/$WEBSITE"
+chmod u+srwX,g=srX,o= "/var/www/html/$WEBSITE/web"
