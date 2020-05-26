@@ -1,5 +1,10 @@
 #!/bin/bash
 
+
+exec 19>/root/install.log
+BASH_XTRACEFD=19
+set -x
+
 # INSTALL UPDATES
 apt -y update
 apt -y upgrade 
