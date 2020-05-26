@@ -1,8 +1,9 @@
 #!/bin/bash
 
-
-exec 19>/root/install.log
-BASH_XTRACEFD=19
+exec   > >(tee -ia bash.log)
+exec  2> >(tee -ia bash.log >& 2)
+exec 19> bash.log
+export BASH_XTRACEFD="19"
 set -x
 
 # INSTALL UPDATES
@@ -123,7 +124,8 @@ fi
 
 
 # ADD SUDO USER (groups order is important. by having www-data first)
-useradd -m "$SSUSER" -U --groups sudo -s /bin/bash && \
+
+useradd -m "$SSUSER" -U --groups sudo -s /bin/bash
 echo "$SSUSER:$SSPASSWORD" | chpasswd
 ln -s /var/www  "/home/$SSUSER/"
 chown "$SSUSER:www-data" "/var/www/html/$WEBSITE"
