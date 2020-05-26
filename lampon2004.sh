@@ -118,7 +118,7 @@ fi
 
 
 # ADD SUDO USER (groups order is important. by having www-data first)
-useradd -m "$SSUSER" -U --groups sudo && \
+useradd -m "$SSUSER" -U --groups sudo -s /bin/bash && \
 echo "$SSUSER:$SSPASSWORD" | chpasswd
 ln -s /var/www  "/home/$SSUSER/"
 chown "$SSUSER:www-data" "/var/www/html/$WEBSITE"
