@@ -1,27 +1,6 @@
 #!/bin/bash
-## 
-#<UDF name="ssuser" Label="New user" example="username" />
-#<UDF name="sspassword" Label="New user password" example="Password" />
-#<UDF name="hostname" Label="Hostname" example="examplehost" />
-#<UDF name="website" Label="Website" example="example.com" />
 
-# <UDF name="db_password" Label="MySQL root Password" />
-# <UDF name="db_name" Label="Create Database" default="" example="Create database" />
-
-#<UDF name="UFW_ENABLE" Label="Enable Firewall?" oneOf="yes,no" default="yes" />
-# <UDF name="SETUP_F2B" Label="Fail2ban with (mostly) default configuration" oneOf="yes,no" default="yes" />
-# <UDF name="TIMEZONE" Label="TZ Database Timezone" default="America/Los_Angeles" example="America/Los_Angeles,America/Denver,America/Chicago,America/New_York" />
-
-#<UDF name="port_in_udp" Label="Firewall UDP Ports IN" example="" />
-#<UDF name="port_in_tcp" Label="Firewall TCP Ports IN" example="22,80,443" />
-
-
-# ADD SUDO USER
-adduser $SSUSER --disabled-password --gecos "" && \
-echo "$SSUSER:$SSPASSWORD" | chpasswd
-adduser $SSUSER sudo
-
-# UPDATES
+# INSTALL UPDATES
 apt -y update
 apt -y upgrade 
 apt -y autoremove
@@ -112,8 +91,6 @@ chown www-data /var/log/php
 # default OUT/TCP: 
 # default  IN/UDP:
 # default  IN/TCP:
-
-
 if [ "$UFW_ENABLE" == "yes" ]; then
   apt -y install ufw
   ufw --force reset
@@ -138,3 +115,11 @@ if [ "$SETUP_F2B" == "yes" ]; then
     systemctl start fail2ban
     systemctl enable fail2ban
 fi
+
+
+# ADD SUDO USER (groups order is important. by having www-data first)
+useradd -m "$SSUSER" -U --groups sudo && \
+echo "$SSUSER:$SSPASSWORD" | chpasswd
+ln -s /var/www  "/home/$SSUSER/"
+chown -R "$SSUSER:www-data" "/var/www/html/$WEBSITE"
+chmod -R u+srwX,g=srX,o= "/var/www/html/$WEBSITE"
