@@ -18,4 +18,6 @@ This is an Ubuntu 20.04 StackScript, based (loosely) on https://github.com/machi
 ## Post Installation Suggestions
 
 - Make `bash` more friendly: add [oh-my-bash](https://github.com/ohmybash/oh-my-bash). Though any system changes introduce security risks.
+```sh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" && sed -i 's|OSH_THEME=".*"|OSH_THEME="powerline"|g' ~/.bashrc
+```
