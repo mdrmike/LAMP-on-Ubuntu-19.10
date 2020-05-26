@@ -2,7 +2,7 @@
 
 exec   > >(tee -ia bash.log)
 exec  2> >(tee -ia bash.log >& 2)
-exec 19> bash.log
+exec 19> /root/install.log
 export BASH_XTRACEFD="19"
 set -x
 
@@ -132,3 +132,6 @@ chown "$SSUSER:www-data" "/var/www/html/$WEBSITE"
 chown "$SSUSER:www-data" "/var/www/html/$WEBSITE/web"
 chmod u+srwX,g=srX,o= "/var/www/html/$WEBSITE"
 chmod u+srwX,g=srX,o= "/var/www/html/$WEBSITE/web"
+
+cat /root/install.log > /home/$SSUSER/install.log
+chown "$SSUSER:$SSUSER" /home/$SSUSER/install.log
