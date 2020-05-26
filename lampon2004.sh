@@ -6,7 +6,7 @@ apt -y upgrade
 apt -y autoremove
 
 # SET HOSTNAME	
-hostnamectl set-hostname $HOSTNAME
+hostnamectl set-hostname "$HOSTNAME"
 echo "127.0.0.1   $HOSTNAME" >> /etc/hosts
 
 if [ -n "$TIMEZONE" ]; then
@@ -21,10 +21,10 @@ apt -y install apache2
 sed -ie "s/KeepAlive Off/KeepAlive On/g" /etc/apache2/apache2.conf
 
 # COPY CONFIG TO NEW SITE:                                                      @TODO this is horrible. Use Apache tools so things work as expected.
-cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$WEBSITE.conf
+cp /etc/apache2/sites-available/000-default.conf "/etc/apache2/sites-available/$WEBSITE.conf"
 
 # CONFIGURE VHOST
-cat <<END >/etc/apache2/sites-available/$WEBSITE.conf
+cat > /etc/apache2/sites-available/$WEBSITE.conf <<EOL
 <Directory /var/www/html/$WEBSITE/web>
     Require all granted
 </Directory>
@@ -36,7 +36,7 @@ cat <<END >/etc/apache2/sites-available/$WEBSITE.conf
         ErrorLog /var/www/html/$WEBSITE/logs/error.log
         CustomLog /var/www/html/$WEBSITE/logs/access.log combined
 </VirtualHost>
-END
+EOL
 
 mkdir -p /var/www/html/$WEBSITE/{web,logs}
 
