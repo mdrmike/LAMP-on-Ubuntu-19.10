@@ -21,4 +21,4 @@
 
 curl -o configure.sh -L https://raw.githubusercontent.com/mdrmike/LAMP-on-Ubuntu-20.04/master/lampon2004.sh 
 
-. ./configure.sh
+source configure.sh
