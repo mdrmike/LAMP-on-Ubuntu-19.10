@@ -15,7 +15,7 @@
 # <UDF name="setup_f2b" Label="Fail2ban with (mostly) default configuration" oneOf="yes,no" default="yes" />
 # <UDF name="timezone" Label="TZ Database Timezone" default="America/Los_Angeles" example="America/Los_Angeles, America/Denver, America/Chicago, America/New_York" />
 # <UDF name="port_in_udp" Label="Firewall UDP Ports IN" default="" example="comma, separated, list, (but typically left blank)" />
-# <UDF name="port_in_tcp" Label="Firewall TCP Ports IN" default="22, 80, 443" example="22, 80, 443" />
+# <UDF name="port_in_tcp" Label="Firewall TCP Ports IN" default="22,80,443" example="22, 80, 443" />
 
 # <UDF name="ssdebug" Label="Create install.log in home folder?" oneof="yes,no" default="no" example="yes" />
 
