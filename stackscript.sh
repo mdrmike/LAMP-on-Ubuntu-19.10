@@ -5,7 +5,7 @@
 # <UDF name="sshkey" Label="User SSH Key" />
 
 #<UDF name="hostname" Label="Hostname" example="examplehost" />
-#<UDF name="website" Label="Website" example="example.com" />
+# <UDF name="fqdn" Label="Website (FQDN)" example="www.example.com" />
 
 # <UDF name="db_name" Label="Create Database" default="" example="Create database" />
 # <UDF name="db_user" Label="Database Username" default="" />

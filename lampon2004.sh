@@ -31,26 +31,26 @@ apt -y install apache2
 sed -ie "s/KeepAlive Off/KeepAlive On/g" /etc/apache2/apache2.conf
 
 # COPY CONFIG TO NEW SITE:                                                      @TODO this is horrible. Use Apache tools so things work as expected.
-cp /etc/apache2/sites-available/000-default.conf "/etc/apache2/sites-available/$WEBSITE.conf"
+cp /etc/apache2/sites-available/000-default.conf "/etc/apache2/sites-available/$FQDN.conf"
 
 # CONFIGURE VHOST
-cat > /etc/apache2/sites-available/$WEBSITE.conf <<EOL
-<Directory /var/www/html/$WEBSITE/web>
+cat > /etc/apache2/sites-available/$FQDN.conf <<EOL
+<Directory /var/www/html/$FQDN/web>
     Require all granted
 </Directory>
 <VirtualHost *:80>
-        ServerName $WEBSITE
-        ServerAlias www.$WEBSITE
+        ServerName $FQDN
+        ServerAlias www.$FQDN
         ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/html/$WEBSITE/web
-        ErrorLog /var/www/html/$WEBSITE/logs/error.log
-        CustomLog /var/www/html/$WEBSITE/logs/access.log combined
+        DocumentRoot /var/www/html/$FQDN/web
+        ErrorLog /var/www/html/$FQDN/logs/error.log
+        CustomLog /var/www/html/$FQDN/logs/access.log combined
 </VirtualHost>
 EOL
 
-mkdir -p /var/www/html/$WEBSITE/{web,logs}
+mkdir -p /var/www/html/$FQDN/{web,logs}
 
-cat > /var/www/html/$WEBSITE/web/index.php <<EOL
+cat > /var/www/html/$FQDN/web/index.php <<EOL
 <html>
   <head>
    <title>Stackscript: Ubuntu 20.04 LAMP successfully installed.</title>
@@ -66,7 +66,7 @@ EOL
 rm /var/www/html/index.html
 
 # Link your virtual host file from the sites-available directory to the sites-enabled directory:
-sudo a2ensite $WEBSITE.conf
+sudo a2ensite $FQDN.conf
 
 #Disable the default virtual host to minimize security risks:
 a2dissite 000-default.conf
