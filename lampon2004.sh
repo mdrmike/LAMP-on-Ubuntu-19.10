@@ -18,7 +18,7 @@ fi
 function harden_ssh() {
   local _port="${1}"                                                            # Capture port from $1
   [ "${_port}" = "" ] && _port="22"                                             # Set to default 22 if alternate port wasn't set in stackscript
-  cat > /etc/ssh/sshd_config.d/$SSH_CFGFILE <<EOL
+  cat > "/etc/ssh/sshd_config.d/${SSH_CFGFILE}" <<EOL
   Port ${_port}
   AddressFamily inet
   PasswordAuthentication no
@@ -40,6 +40,7 @@ harden_ssh "${SSHPORT}"
 apt -y update
 apt -y upgrade 
 apt -y autoremove
+
 
 # SET HOSTNAME	
 # Configure hostname and configure entry to /etc/hosts
@@ -153,6 +154,7 @@ if [ "$UFW_ENABLE" = "yes" ]; then
   apt -y install ufw
   ufw --force reset
   ufw default deny
+  [ "${SSHPORT}" != "" ] && [ "$PORT_IN_TCP" != "" ] && PORT_IN_TCP="${PORT_IN_TCP},${SSHPORT}" || PORT_IN_TCP="${SSHPORT}" # ensure firewall allows ssh in
   [ -n "$PORT_OUT_UDP" ] && ufw allow out "$PORT_OUT_UDP/udp"                   # Test for variable &&  Then Set UFW
   [ -n "$PORT_OUT_TCP" ] && ufw allow out "$PORT_OUT_TCP/tcp"                   # Test for variable &&  Then Set UFW
   [ -n "$PORT_IN_UDP" ]  && ufw allow in "$PORT_IN_UDP/udp"                     # Test for variable &&  Then Set UFW
