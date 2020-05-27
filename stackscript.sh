@@ -2,6 +2,7 @@
 
 #<UDF name="ssuser" Label="New user" example="username" />
 #<UDF name="sspassword" Label="New user password" example="Password" />
+# <UDF name="sshkey" Label="User SSH Key" />
 
 #<UDF name="hostname" Label="Hostname" example="examplehost" />
 #<UDF name="website" Label="Website" example="example.com" />

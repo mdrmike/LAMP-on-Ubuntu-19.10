@@ -127,15 +127,27 @@ if [ "$SETUP_F2B" == "yes" ]; then
 fi
 
 
-# ADD SUDO USER (groups order is important. by having www-data first)
 
-useradd -m "$SSUSER" -U --groups sudo -s /bin/bash
-echo "$SSUSER:$SSPASSWORD" | chpasswd
-ln -s /var/www  "/home/$SSUSER/"
-chown "$SSUSER:www-data" "/var/www/html/$WEBSITE"
-chown "$SSUSER:www-data" "/var/www/html/$WEBSITE/web"
-chmod u+srwX,g=srX,o= "/var/www/html/$WEBSITE"
-chmod u+srwX,g=srX,o= "/var/www/html/$WEBSITE/web"
+if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
+  useradd -m "$SSUSER" -U --groups sudo -s /bin/bash
+  echo "$SSUSER:$SSPASSWORD" | chpasswd
+  ln -s /var/www  "/home/$SSUSER/"
+  chown "$SSUSER:www-data" "/var/www/html/$FQDN"
+  chown "$SSUSER:www-data" "/var/www/html/$FQDN/web"
+  chmod u+srwX,g=srX,o= "/var/www/html/$FQDN"
+  chmod u+srwX,g=srX,o= "/var/www/html/$FQDN/web"
+
+  # Disable root password
+  passwd --lock root
+  # ensure sudo is installed and configure secure user
+  apt -y install sudo
+  # configure ssh key for secure user
+  SSHDIR="/home/$SSUSER/.ssh"
+  mkdir $SSHDIR && echo "$SSHKEY" >> $SSHDIR/authorized_keys
+  chmod -R 700 $SSHDIR && chmod 600 $SSHDIR/authorized_keys
+  chown -R $SSUSER:$SSUSER $SSHDIR
+fi
+
 
 cat /root/install.log > /home/$SSUSER/install.log
 chown "$SSUSER:$SSUSER" /home/$SSUSER/install.log
