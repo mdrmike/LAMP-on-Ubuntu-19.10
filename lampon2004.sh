@@ -16,8 +16,15 @@ apt -y upgrade
 apt -y autoremove
 
 # SET HOSTNAME	
+# Configure hostname and configure entry to /etc/hosts
+IPADDR=`hostname -I | awk '{ print $1 }'`
+echo -e "\n# The following was added via Linode StackScript" >> /etc/hosts
+# Set FQDN and HOSTNAME if they aren't defined
+[ "$FQDN" == "" ] && FQDN=`dnsdomainname -A | cut -d' ' -f1`
+[ "$HOST" == "" ] && HOSTNAME=`echo $FQDN | cut -d'.' -f1` || HOSTNAME="$HOST"
+
+echo -e "$IPADDR\t$FQDN $HOSTNAME" >> /etc/hosts
 hostnamectl set-hostname "$HOSTNAME"
-echo "127.0.0.1   $HOSTNAME" >> /etc/hosts
 
 if [ -n "$TIMEZONE" ]; then
   # Configure timezone
@@ -152,3 +159,4 @@ fi
 # === this should be last in the file to esure full log is copied
 cat /root/install.log > /home/$SSUSER/install.log
 chown "$SSUSER:$SSUSER" /home/$SSUSER/install.log
+
