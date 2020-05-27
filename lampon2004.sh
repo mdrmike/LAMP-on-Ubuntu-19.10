@@ -10,6 +10,31 @@ if [ "${SSDEBUG,,}" == "yes" ]; then
   set -x
 fi
 
+[ "${SSH_CFGFILE}" = "" ] && SSH_CFGFILE="stackscript.conf"                     # Set default for ssh_configfile
+
+
+## Harden SSH
+function harden_ssh() {
+  local _port="${1}"                                                            # Capture port from $1
+  [ "${_port}" = "" ] && _port="22"                                             # Set to default 22 if alternate port wasn't set in stackscript
+  cat > /etc/ssh/sshd_config.d/$SSH_CFGFILE <<EOL
+  Port ${_port}
+  AddressFamily inet
+  PasswordAuthentication no
+  AllowTcpForwarding no
+  X11Forwarding no
+  PermitRootLogin no
+  DenyUsers root
+  AllowUsers ${newuser}
+EOL
+sshd -t || exit
+# systemctl restart sshd
+}
+
+
+harden_ssh "${SSHPORT}"
+
+
 # INSTALL UPDATES
 apt -y update
 apt -y upgrade 
