@@ -37,9 +37,9 @@ harden_ssh "${SSHPORT}"
 
 
 # INSTALL UPDATES
-apt -y update
-apt -y upgrade 
-apt -y autoremove
+apt-get -y update
+apt-get -y upgrade 
+apt-get -y autoremove
 
 
 # SET HOSTNAME	
@@ -59,7 +59,7 @@ if [ -n "$TIMEZONE" ]; then
 fi
 
 #INSTALL APACHE
-apt -y install apache2
+apt-get -y install apache2
 
 # EDIT APACHE CONFIG
 sed -ie "s/KeepAlive Off/KeepAlive On/g" /etc/apache2/apache2.conf
@@ -112,17 +112,17 @@ systemctl restart apache2
 # Install MySQL Server in a Non-Interactive mode. Default root password will be "root"
 # echo "mysql-server mysql-server/root_password password $DB_PASSWORD" | sudo debconf-set-selections
 # echo "mysql-server mysql-server/root_password_again password $DB_PASSWORD" | sudo debconf-set-selections
-apt -y install mysql-server
+apt-get -y install mysql-server
 
 # mysql --host localhost -u$SQLuser -p$SQLpwd
 # create database ${DB_NAME};
 # create user ${DB_USER};
 # GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON ${DB_NAME}.* TO ${DB_USER}@localhost IDENTIFIED BY ${DB_PASSWORD};
 # exit
-#
-#
-#
-#
+# 
+# 
+# 
+# 
 # mysql -u${DB_USER} -p$DB_PASSWORD -e "create database $DB_NAME"
 
 mysql -uroot -e "CREATE DATABASE ${DB_NAME} /*\!40100 DEFAULT CHARACTER SET utf8 */;"
@@ -134,7 +134,7 @@ mysql -uroot -e "FLUSH PRIVILEGES;"
 service mysql restart
  
 #installing php
-apt -y install php libapache2-mod-php php-mysql 
+apt-get -y install php libapache2-mod-php php-mysql 
 
 # adjust dir.conf to look for index.php 1st
 sed -ie "s/DirectoryIndex index.html index.cgi index.pl index.php index.xhtml indem/DirectoryIndex index.php index.html index.htm/g" /etc/apache2/mods-enabled/dir.conf
@@ -151,7 +151,7 @@ chown www-data /var/log/php
 # default  IN/UDP:
 # default  IN/TCP:
 if [ "$UFW_ENABLE" = "yes" ]; then
-  apt -y install ufw
+  apt-get -y install ufw
   ufw --force reset
   ufw default deny
   [ "${SSHPORT}" != "" ] && [ "$PORT_IN_TCP" != "" ] && PORT_IN_TCP="${PORT_IN_TCP},${SSHPORT}" || PORT_IN_TCP="${SSHPORT}" # ensure firewall allows ssh in
@@ -167,7 +167,7 @@ fi
 
 ## Setup Fail2Ban 
 if [ "$SETUP_F2B" = "yes" ]; then
-    apt install fail2ban -y
+    apt-get -y install fail2ban
     cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local
     cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
     sed -ie "s/bantime.*10m/bantime  = 1h/g" /etc/fail2ban/jail.local 
@@ -190,7 +190,7 @@ if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
   # Disable root password
   passwd --lock root
   # ensure sudo is installed and configure secure user
-  apt -y install sudo
+  apt-get -y install sudo
   # configure ssh key for secure user
   SSHDIR="/home/$SSUSER/.ssh"
   mkdir $SSHDIR && echo "$SSHKEY" >> $SSHDIR/authorized_keys
