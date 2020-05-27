@@ -1,10 +1,14 @@
 #!/bin/bash
 
-exec   > >(tee -ia bash.log)
-exec  2> >(tee -ia bash.log >& 2)
-exec 19> /root/install.log
-export BASH_XTRACEFD="19"
-set -x
+if [ "${SSDEBUG,,}" == "yes" ]; then
+  # CREATE LOGFILE, 
+  #   based on https://askubuntu.com/a/1001404/139249
+  exec   > >(tee -ia bash.log)
+  exec  2> >(tee -ia bash.log >& 2)
+  exec 19> /root/install.log
+  export BASH_XTRACEFD="19"
+  set -x
+fi
 
 # INSTALL UPDATES
 apt -y update
