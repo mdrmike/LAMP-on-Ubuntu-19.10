@@ -18,6 +18,7 @@
 # <UDF name="port_in_tcp" Label="Firewall TCP Ports IN" default="22,80,443" example="22, 80, 443" />
 # <UDF name="sshport" Label="Special Port for Firewall" default="22" example="22, 2222, 33333" />
 
+# <UDF name="ssadminer" Label="Install Adminer (MySQL Tool)" oneof="yes,no" default="no" example="yes" />
 # <UDF name="ssdebug" Label="Create install.log in home folder?" oneof="yes,no" default="no" example="yes" />
 
 curl -o configure.sh -L https://raw.githubusercontent.com/mdrmike/LAMP-on-Ubuntu-20.04/master/lampon2004.sh 

@@ -198,6 +198,12 @@ if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
   chown -R $SSUSER:$SSUSER $SSHDIR
 fi
 
+# Install Adminder for MYSQL
+if [ "${SSADMINER,,}" = "yes" ]; then
+  apt-get -y install adminer
+  a2enconf adminer
+  systemctl reload apache2
+fi
 
 # === this should be last in the file to esure full log is copied
 cat /root/install.log > /home/$SSUSER/install.log
