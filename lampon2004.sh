@@ -1,6 +1,7 @@
 #!/bin/bash
 
-if [ "${SSDEBUG,,}" == "yes" ]; then
+
+if [ "${SSDEBUG,,}" = "yes" ]; then
   # CREATE LOGFILE, 
   #   based on https://askubuntu.com/a/1001404/139249
   exec   > >(tee -ia /root/install.log)
@@ -45,8 +46,8 @@ apt -y autoremove
 IPADDR=`hostname -I | awk '{ print $1 }'`
 echo -e "\n# The following was added via Linode StackScript" >> /etc/hosts
 # Set FQDN and HOSTNAME if they aren't defined
-[ "$FQDN" == "" ] && FQDN=`dnsdomainname -A | cut -d' ' -f1`
-[ "$HOST" == "" ] && HOSTNAME=`echo $FQDN | cut -d'.' -f1` || HOSTNAME="$HOST"
+[ "$FQDN" = "" ] && FQDN=`dnsdomainname -A | cut -d' ' -f1`
+[ "$HOST" = "" ] && HOSTNAME=`echo $FQDN | cut -d'.' -f1` || HOSTNAME="$HOST"
 
 echo -e "$IPADDR\t$FQDN $HOSTNAME" >> /etc/hosts
 hostnamectl set-hostname "$HOSTNAME"
@@ -133,7 +134,7 @@ chown www-data /var/log/php
 # default OUT/TCP: 
 # default  IN/UDP:
 # default  IN/TCP:
-if [ "$UFW_ENABLE" == "yes" ]; then
+if [ "$UFW_ENABLE" = "yes" ]; then
   apt -y install ufw
   ufw --force reset
   ufw default deny
@@ -148,7 +149,7 @@ if [ "$UFW_ENABLE" == "yes" ]; then
 fi
 
 ## Setup Fail2Ban 
-if [ "$SETUP_F2B" == "yes" ]; then
+if [ "$SETUP_F2B" = "yes" ]; then
     apt install fail2ban -y
     cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local
     cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
