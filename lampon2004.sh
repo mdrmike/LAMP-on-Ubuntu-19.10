@@ -203,3 +203,5 @@ fi
 cat /root/install.log > /home/$SSUSER/install.log
 chown "$SSUSER:$SSUSER" /home/$SSUSER/install.log
 
+sleep 30s
+reboot
