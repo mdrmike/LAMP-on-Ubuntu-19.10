@@ -28,7 +28,7 @@ function harden_ssh() {
   DenyUsers root
   AllowUsers ${newuser}
 EOL
-sshd -t || exit
+sshd -t || exit $?                                                              # Test config if fails, exit function
 # systemctl restart sshd
 }
 
