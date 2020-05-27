@@ -109,11 +109,26 @@ systemctl reload apache2
 systemctl restart apache2
 
 # Install MySQL Server in a Non-Interactive mode. Default root password will be "root"
-echo "mysql-server mysql-server/root_password password $DB_PASSWORD" | sudo debconf-set-selections
-echo "mysql-server mysql-server/root_password_again password $DB_PASSWORD" | sudo debconf-set-selections
+# echo "mysql-server mysql-server/root_password password $DB_PASSWORD" | sudo debconf-set-selections
+# echo "mysql-server mysql-server/root_password_again password $DB_PASSWORD" | sudo debconf-set-selections
 apt -y install mysql-server
 
-mysql -uroot -p$DB_PASSWORD -e "create database $DB_NAME"
+# mysql --host localhost -u$SQLuser -p$SQLpwd
+# create database ${DB_NAME};
+# create user ${DB_USER};
+# GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON ${DB_NAME}.* TO ${DB_USER}@localhost IDENTIFIED BY ${DB_PASSWORD};
+# exit
+#
+#
+#
+#
+# mysql -u${DB_USER} -p$DB_PASSWORD -e "create database $DB_NAME"
+
+mysql -uroot -e "CREATE DATABASE ${DB_NAME} /*\!40100 DEFAULT CHARACTER SET utf8 */;"
+mysql -uroot -e "CREATE USER ${DB_USER}@localhost IDENTIFIED BY '${DB_PASSWORD}';"
+#mysql -uroot -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON ${DB_NAME}.* TO '${DB_USER}'@'localhost';"
+mysql -uroot -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'localhost';"
+mysql -uroot -e "FLUSH PRIVILEGES;"
 
 service mysql restart
  
