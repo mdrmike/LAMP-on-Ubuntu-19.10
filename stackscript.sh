@@ -16,6 +16,8 @@
 #<UDF name="port_in_udp" Label="Firewall UDP Ports IN" default="" example="comma, separated, list, (but typically left blank)" />
 #<UDF name="port_in_tcp" Label="Firewall TCP Ports IN" default="22, 80, 443" example="22, 80, 443" />
 
+#<UDF name="ssdebug" Label="Create install.log in home folder?" oneof="yes,no" default="no" example="yes" />
+
 curl -o configure.sh -L https://raw.githubusercontent.com/mdrmike/LAMP-on-Ubuntu-20.04/master/lampon2004.sh 
 
 . ./configure.sh
