@@ -144,6 +144,34 @@ mkdir /var/log/php
 chown www-data /var/log/php
 
 
+# Unattended security updates
+if [ "${SSUU,,}" = "yes" ]; then
+  apt-get -y install unattended-upgrades
+  # Based on https://help.ubuntu.com/community/AutomaticSecurityUpdates
+  # and 
+  
+  # It seems ubuntu 20.04 installs unattended-upgrades automatically, and 
+  # echo '
+  # // This is normally a much bigger file with multiple commented lines, this has been generated via a script so only includes what we need. If you need more options read the MAN page
+  # Unattended-Upgrade::Allowed-Origins {
+  # 	"${distro_id}:${distro_codename}-security";
+  # 	"${distro_id}ESM:${distro_codename}";
+  # };
+  # ' > /etc/apt/apt.conf.d/50unattended-upgrades
+  cat > /etc/apt/apt.conf.d/20auto-upgrades <<EOL
+  APT::Periodic::Update-Package-Lists "1";
+  APT::Periodic::Unattended-Upgrade "1";
+
+  // might just download non-security related updates, but doesn't install
+  APT::Periodic::Download-Upgradeable-Packages "1";
+  // Not needed for updates, but helps keep system clean/light. Always have backups
+  APT::Periodic::AutocleanInterval "3";
+EOL
+
+fi
+
+
+
 ## Lockdown Firewall
 # see list of ports: https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers#Table_legend
 # default OUT/UDP: 53,67,68,137,138/udp Allow outbound DNS,dhcp,dhcp,netbios(SAMBA),netbios(SAMBA)/udp 
