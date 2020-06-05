@@ -213,7 +213,7 @@ if [ "${SSZSH,,}" = "yes" ]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended 
   sed -i 's|ZSH_THEME=".*"|ZSH_THEME="rkj-repos"|g' ~/.zshrc
   mv cp -R .oh-my-zsh /etc/skel/
-  mv ..z* /etc/skel/
+  mv .z* /etc/skel/
 fi
 
 if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
