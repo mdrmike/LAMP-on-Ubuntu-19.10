@@ -71,6 +71,8 @@ cp /etc/apache2/sites-available/000-default.conf "/etc/apache2/sites-available/$
 cat > /etc/apache2/sites-available/$FQDN.conf <<EOL
 <Directory /var/www/html/$FQDN/web>
     Require all granted
+    AllowOverride All
+    Allow from All
 </Directory>
 <VirtualHost *:80>
         ServerName $FQDN
@@ -135,6 +137,7 @@ service mysql restart
  
 #installing php
 apt-get -y install php libapache2-mod-php php-mysql 
+apt-get -y install php-curl php-db php-dom php-gd php-json php-tokenizer php-pear php-xml php-mbstring #drupal requirements
 
 # adjust dir.conf to look for index.php 1st
 sed -ie "s/DirectoryIndex index.html index.cgi index.pl index.php index.xhtml indem/DirectoryIndex index.php index.html index.htm/g" /etc/apache2/mods-enabled/dir.conf
@@ -245,4 +248,4 @@ cat /root/install.log > /home/$SSUSER/install.log
 chown "$SSUSER:$SSUSER" /home/$SSUSER/install.log
 
 
-shutdown --reboot +1
+shutdown --reboot +1 
