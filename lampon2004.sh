@@ -147,7 +147,7 @@ chown www-data /var/log/php
 # Unattended security updates
 if [ "${SSUU,,}" = "yes" ]; then
   apt-get -y install unattended-upgrades
-  # Based on https://help.ubuntu.com/community/AutomaticSecurityUpdates
+  # Based loosely on https://help.ubuntu.com/community/AutomaticSecurityUpdates
   # and 
   
   # It seems ubuntu 20.04 installs unattended-upgrades automatically, and 
@@ -244,5 +244,5 @@ fi
 cat /root/install.log > /home/$SSUSER/install.log
 chown "$SSUSER:$SSUSER" /home/$SSUSER/install.log
 
-sleep 30s
-reboot
+
+shutdown --reboot +1
