@@ -26,7 +26,7 @@ function harden_ssh() {
   X11Forwarding no
   PermitRootLogin no
   DenyUsers root
-  AllowUsers ${newuser}
+  AllowUsers ${SSUSER}
 EOL
 sshd -t || exit $?                                                              # Test config if fails, exit function
 # systemctl restart sshd
@@ -215,7 +215,6 @@ if [ "${SSZSH,,}" = "yes" ]; then
   mv cp -R .oh-my-zsh /etc/skel/
   mv .z* /etc/skel/
 fi
-
 if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
   useradd -m "$SSUSER" -U --groups sudo -s /bin/bash
   echo "$SSUSER:$SSPASSWORD" | chpasswd
