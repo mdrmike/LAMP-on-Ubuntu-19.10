@@ -237,7 +237,8 @@ if [ "${SSZSH,,}" = "yes" ]; then
   apt-get -y install zsh
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended 
   sed -i 's|ZSH_THEME=".*"|ZSH_THEME="rkj-repos"|g' ~/.zshrc
-  mv cp -R .oh-my-zsh /etc/skel/
+  sed -i "s|root|$SSUSER|g" ~/.zshrc
+  mv .oh-my-zsh /etc/skel/
   mv .z* /etc/skel/
 fi
 if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
