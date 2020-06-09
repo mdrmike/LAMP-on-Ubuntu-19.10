@@ -241,7 +241,7 @@ if [ "${SSZSH,,}" = "yes" ]; then
     sleep 3 # or less like 0.2
   done
   sed -i 's|ZSH_THEME=".*"|ZSH_THEME="rkj-repos"|g' ~/.zshrc
-  sed -i 's|ZSH=\"*\.oh-my-zsh\"|ZSH=\"$HOME/.oh-my-zsh\"|g' ~/.zshrc
+  sed -i "s|root|$SSUSER|g" ~/.zshrc
   mv .oh-my-zsh /etc/skel/
   mv .z* /etc/skel/
 fi
