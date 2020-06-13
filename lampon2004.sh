@@ -239,6 +239,7 @@ if [ "${SSZSH,,}" = "yes" ]; then
   do
     sleep 3 
   done
+  sleep 3
   sed -i 's|ZSH_THEME=".*"|ZSH_THEME="rkj-repos"|g' ~/.zshrc
   sed -i 's|export ZSH=".*"|export ZSH="\$HOME/.oh-my-zsh"|g' ~/.zshrc
   mv .oh-my-zsh /etc/skel/
