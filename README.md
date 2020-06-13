@@ -4,7 +4,7 @@
 This is an Ubuntu 20.04 StackScript, based (loosely) on https://github.com/machieajones/LAMP-on-Ubuntu-19.10 (itself is based on https://github.com/hmorris3293/Lamp-on-Ubuntu-18.04LTS/).
 
 - [ ] @TODO: Add ubutnu lockdown similiar to: https://cloud.linode.com/stackscripts/612220
-  - [ ] ~~Add SSH key login~~ (included for root in default linode dashboard)
+  - [x] ~~Add SSH key login~~ (included for root in default linode dashboard)
   - [ ] root password and SSH access disabled
   - [x] timezone configuration
   - [x] Fail2Ban (default configuration)
