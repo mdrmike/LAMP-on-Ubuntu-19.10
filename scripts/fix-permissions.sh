@@ -1,4 +1,7 @@
 #!/bin/bash
+DefaultPath=""                                                                  # For Default Path use no trailing slash
+DefaultUser=""
+DefaultGroup="www-data"
 
 # Help menu
 print_help() {
@@ -24,9 +27,10 @@ if [ $(id -u) != 0 ]; then
   exit 1
 fi
 
-drupal_path=${1%/}
-drupal_user=${2}
-httpd_group="${3:-www-data}"
+# set defaults
+[ "$1" != "" ] && drupal_path="${1%/}" || drupal_path="$DefaultPath"
+drupal_user="${2:-$DefaultUser}"
+httpd_group="${3:-$DefaultGroup}"
 
 # Parse Command Line Arguments
 while [ "$#" -gt 0 ]; do
@@ -66,23 +70,21 @@ if [ -z "${drupal_user}" ] || [[ $(id -un "${drupal_user}" 2> /dev/null) != "${d
   exit 1
 fi
 
-cd $drupal_path
 printf "Changing ownership of all contents of "${drupal_path}":\n user => "${drupal_user}" \t group => "${httpd_group}"\n"
-chown -R ${drupal_user}:${httpd_group} .
+chown -R "${drupal_user}:${httpd_group}" "$drupal_path"
 
 printf "Changing permissions of all directories inside "${drupal_path}" to "rwxr-x---"...\n"
-find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
+find "$drupal_path" -type d -exec chmod u=rwx,g=rx,o= '{}' \;
 
 printf "Changing permissions of all files inside "${drupal_path}" to "rw-r-----"...\n"
-find . -type f -exec chmod u=rw,g=r,o= '{}' \;
+find "$drupal_path" -type f -exec chmod u=rw,g=r,o= '{}' \;
 
 printf "Changing permissions of "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
-cd sites
-find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
+find "$drupal_path/sites" -type d -name files -exec chmod ug=rwx,o= '{}' \;
 
 printf "Changing permissions of all files inside all "files" directories in "${drupal_path}/sites" to "rw-rw----"...\n"
 printf "Changing permissions of all directories inside all "files" directories in "${drupal_path}/sites" to "rwxrwx---"...\n"
-for x in ./*/files; do
+for x in "$drupal_path/sites/*/files"; do
   find ${x} -type d -exec chmod ug=rwx,o= '{}' \;
   find ${x} -type f -exec chmod ug=rw,o= '{}' \;
 done
