@@ -103,15 +103,27 @@ rm /var/www/html/index.html
 # Add Drupal permissions reset tool
 cat > /opt/resetperms.sh <<EOL
 #!/bin/bash
+# NAME
+#      resetperms.sh - reset web permissions
+# 
+# SYNOPSIS
+#      resetperms.sh [Directory]
+# 
+# DESCRIPTION
+#      Based on https://www.drupal.org/node/244924#linux-servers
+#      Used to reset owner and permissions of files in website. 
+#      [Directory] is the path to website root.
+
 d="/var/www/html/$FQDN/web"                                                             # path to Drupal root directory
 [ ${1} != "" ] &&  d="$1"                                                               # set path to drupal root if passed to script, otherwise use default
 
 cd ${d}                                                                                 # work in drupal root directory
 chown -R ${SSUSER}:www-data "$d"                                                        # fix all drupal website files/directories ownership
-find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;                                        # fix drupal dir  perms (=chmod 750)
-find . -type f -exec chmod u=rw,g=r,o= '{}' \;                                          # fix drupal file perms (=chmod 640)
+find ${d} -type d -exec chmod u=rwx,g=rx,o= '{}' \;                                        # fix drupal dir  perms (=chmod 750)
+find ${d} -type f -exec chmod u=rw,g=r,o= '{}' \;                                          # fix drupal file perms (=chmod 640)
 cd -                                                                                    # return to last directory
 
+if [ -d "${d}/sites" ]; then                                                            # if path to files exists 
 cd "${d}/sites"                                                                         # work in drupal sites directory
 find . -type d -name files -exec chmod ug=rwx,o= '{}' \;                                # give webserver full access to drupal "files" directory
 for d in ./*/files                                                                      # check if multisite install and repeat
@@ -120,6 +132,7 @@ do
    find "$d/sites" -type f -exec chmod ug=rw,o= '{}' \;                                 # chmod 660
 done
 cd -                                                                                    # return to last directory
+fi
 EOL
 
 chmod a+x /opt/resetperms.sh                                                           # allow script to be executed
