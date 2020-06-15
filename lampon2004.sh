@@ -261,7 +261,7 @@ fi
 if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
   useradd -m "$SSUSER" -U --skel --groups sudo -s /bin/bash
   echo "$SSUSER:$SSPASSWORD" | chpasswd
-  ln -s /var/www  "/home/$SSUSER/"
+  ln -s /var/www/html/$FQDN  "/home/$SSUSER/"
   chown "$SSUSER:www-data" "/var/www/html/$FQDN"
   chown "$SSUSER:www-data" "/var/www/html/$FQDN/web"
   chmod u+srwX,g=srX,o= "/var/www/html/$FQDN"
