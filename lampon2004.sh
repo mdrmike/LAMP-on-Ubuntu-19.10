@@ -259,7 +259,7 @@ if [ "${SSZSH,,}" = "yes" ]; then
   mv .z* /etc/skel/
 fi
 if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
-  useradd -m "$SSUSER" -U --groups sudo -s /bin/bash
+  useradd -m "$SSUSER" -U --skel --groups sudo -s /bin/bash
   echo "$SSUSER:$SSPASSWORD" | chpasswd
   ln -s /var/www  "/home/$SSUSER/"
   chown "$SSUSER:www-data" "/var/www/html/$FQDN"
