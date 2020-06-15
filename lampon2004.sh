@@ -101,41 +101,14 @@ EOL
 rm /var/www/html/index.html
 
 # Add Drupal permissions reset tool
-cat > /opt/resetperms.sh <<EOL
-#!/bin/bash
-# NAME
-#      resetperms.sh - reset web permissions
-# 
-# SYNOPSIS
-#      resetperms.sh [Directory]
-# 
-# DESCRIPTION
-#      Based on https://www.drupal.org/node/244924#linux-servers
-#      Used to reset owner and permissions of files in website. 
-#      [Directory] is the path to website root.
-
-d="/var/www/html/$FQDN/web"                                                             # path to Drupal root directory
-[ ${1} != "" ] &&  d="$1"                                                               # set path to drupal root if passed to script, otherwise use default
-
-cd ${d}                                                                                 # work in drupal root directory
-chown -R ${SSUSER}:www-data "$d"                                                        # fix all drupal website files/directories ownership
-find ${d} -type d -exec chmod u=rwx,g=rx,o= '{}' \;                                        # fix drupal dir  perms (=chmod 750)
-find ${d} -type f -exec chmod u=rw,g=r,o= '{}' \;                                          # fix drupal file perms (=chmod 640)
-cd -                                                                                    # return to last directory
-
-if [ -d "${d}/sites" ]; then                                                            # if path to files exists 
-cd "${d}/sites"                                                                         # work in drupal sites directory
-find . -type d -name files -exec chmod ug=rwx,o= '{}' \;                                # give webserver full access to drupal "files" directory
-for d in ./*/files                                                                      # check if multisite install and repeat
-do
-   find "$d/sites" -type d -exec chmod ug=rwx,o= '{}' \;                                # chmod 770
-   find "$d/sites" -type f -exec chmod ug=rw,o= '{}' \;                                 # chmod 660
-done
-cd -                                                                                    # return to last directory
-fi
+curl -o /opt/scripts/fix-permissions.sh -L https://raw.githubusercontent.com/mdrmike/LAMP-on-Ubuntu-20.04/master/scripts/fix-permissions.sh 
+sed -i "s|DefaultPath=\"\"|DefaultPath=\"/var/www/html/$FQDN/web\"|g" /opt/scripts/fix-permissions.sh
+sed -i "s|DefaultUser=\"\"|DefaultUser=\"${SSUSER}\"|g" /opt/scripts/fix-permissions.sh
+chmod 0440 /opt/scripts/fix-permissions.sh                                                           # allow script to be executed
+ln -s /opt/scripts/fix-permissions.sh  /usr/local/bin/
+tee > /etc/sudoers.d/fix-permissions <<EOL
+${SSUSER} ALL = (root) NOPASSWD: /usr/local/bin/fix-permissions.sh
 EOL
-
-chmod a+x /opt/resetperms.sh                                                           # allow script to be executed
 
 
 # Link your virtual host file from the sites-available directory to the sites-enabled directory:
