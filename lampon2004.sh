@@ -33,6 +33,10 @@ sshd -t || exit $?                                                              
 }
 
 
+## Disable Root Login
+if [ "$SSDISABLEROOT" = " yes" ]; then
+  passwd --lock root
+fi
 harden_ssh "${SSHPORT}"
 
 

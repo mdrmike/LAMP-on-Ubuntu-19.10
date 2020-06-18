@@ -11,6 +11,7 @@
 # <UDF name="db_user" Label="Database Username" default="" />
 # <UDF name="db_password" Label="Database Password" />
 
+# <UDF name="ssdisableroot" Label="Disable Root Login?" oneOf="yes,no" default="yes" />
 # <UDF name="ufw_enable" Label="Enable Firewall?" oneOf="yes,no" default="yes" />
 # <UDF name="setup_f2b" Label="Fail2ban with (mostly) default configuration" oneOf="yes,no" default="yes" />
 # <UDF name="timezone" Label="TZ Database Timezone" default="America/Los_Angeles" example="America/Los_Angeles, America/Denver, America/Chicago, America/New_York" />
