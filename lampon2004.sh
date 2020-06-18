@@ -156,6 +156,15 @@ apt-get -y install php-curl php-db php-dom php-gd php-json php-tokenizer php-pea
 # adjust dir.conf to look for index.php 1st
 sed -ie "s/DirectoryIndex index.html index.cgi index.pl index.php index.xhtml indem/DirectoryIndex index.php index.html index.htm/g" /etc/apache2/mods-enabled/dir.conf
 
+# customize php
+sed -i "s|error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT|error_reporting = E_COMPILE_ERROR \| E_RECOVERABLE_ERROR \| E_ERROR \| E_CORE_ERROR|g" /etc/php/7.4/apache2/php.ini
+sed -i "s|max_input_time = 60|max_input_time = 30|g" /etc/php/7.4/apache2/php.ini
+sed -i "s|post_max_size = 2M|post_max_size = 8M|g" /etc/php/7.4/apache2/php.ini
+sed -i "s|upload_max_filesize = 2M|upload_max_filesize = 8M|g" /etc/php/7.4/apache2/php.ini
+sed -i "s|max_input_time = 60|max_input_time = 30|g" /etc/php/7.4/apache2/php.ini
+
+sed -i "s|;error_log = php_errors\.log|error_log = /var/log/php/error\.log|g" /etc/php/7.4/apache2/php.ini
+
 # making directory for php? giving apache permissions to that log? restarting php
 mkdir /var/log/php
 chown www-data /var/log/php
