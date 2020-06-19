@@ -35,12 +35,12 @@ if [ "${SSDEBUG,,}" = "yes" ]; then
   # CREATE LOGFILE, 
   #   based on https://askubuntu.com/a/1001404/139249
   exec 3>&1 4>&2
-  trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
+  trap 'exec 2>&4 1>&3' 0 1 2 3
   exec 1>/root/install.log 2>&1
 
-  bash -xv /root/configure-ubuntu2004.sh
+  bash -xv /root/configure-ubuntu2004.sh > /root/install2.log 2>&1
   # === this should be last in the file to esure full log is copied
-  cat /root/install.log > /root/install.log
+  #cat /root/install.log > /root/install.log
 else
   bash /root/configure-ubuntu2004.sh
 fi
