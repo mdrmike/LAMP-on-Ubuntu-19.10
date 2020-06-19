@@ -87,6 +87,8 @@ cat > /var/www/html/$FQDN/web/index.php <<EOL
 EOL
 
 rm /var/www/html/index.html
+chown www-data:www-data /var/www/html/$FQDN/web/index.php
+chmod 0440 /var/www/html/$FQDN/web/index.php
 
 # Add Drupal permissions reset tool
 curl -o /opt/scripts/fix-permissions.sh -L https://raw.githubusercontent.com/mdrmike/LAMP-on-Ubuntu-20.04/master/scripts/fix-permissions.sh 
@@ -229,7 +231,7 @@ if [ "${SSZSH,,}" = "yes" ]; then
   mv .z* /etc/skel/
 fi
 if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
-  useradd -m "$SSUSER" -U --skel --groups sudo -s /bin/bash
+  useradd --skel /etc/skel --shell /bin/bash --groups sudo --user-group --create-home "$SSUSER"
   echo "$SSUSER:$SSPASSWORD" | chpasswd
   ln -s /var/www/html/$FQDN  "/home/$SSUSER/"
   chown "$SSUSER:www-data" "/var/www/html/$FQDN"
