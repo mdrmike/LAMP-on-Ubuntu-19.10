@@ -33,10 +33,6 @@ sshd -t || exit $?                                                              
 }
 
 
-## Disable Root Login
-if [ "$SSDISABLEROOT" = " yes" ]; then
-  passwd --lock root
-fi
 harden_ssh "${SSHPORT}"
 
 
@@ -271,9 +267,14 @@ if [ "${SSADMINER,,}" = "yes" ]; then
   systemctl reload apache2
 fi
 
+
 # === this should be last in the file to esure full log is copied
 cat /root/install.log > /home/$SSUSER/install.log
 chown "$SSUSER:$SSUSER" /home/$SSUSER/install.log
 
+## Disable Root Login
+if [ "$SSDISABLEROOT" = " yes" ]; then
+  passwd --lock root
+fi
 
 shutdown --reboot +1 

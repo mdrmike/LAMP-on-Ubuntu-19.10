@@ -1,4 +1,5 @@
 #!/bin/bash
+exec > >(tee -i /var/log/stackscript.log)
 
 # <UDF name="ssuser" Label="New user" example="username" />
 # <UDF name="sspassword" Label="New user password" example="Password" />
