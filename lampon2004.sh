@@ -227,8 +227,9 @@ if [ "${SSZSH,,}" = "yes" ]; then
   sleep 3
   sed -i 's|ZSH_THEME=".*"|ZSH_THEME="rkj-repos"|g' ~/.zshrc
   sed -i 's|export ZSH=".*"|export ZSH="\$HOME/.oh-my-zsh"|g' ~/.zshrc
-  mv .oh-my-zsh /etc/skel/
-  mv .z* /etc/skel/
+  [ ! -d "/etc/skel" ] && mkdir -p /etc/skel
+  mv -v .oh-my-zsh /etc/skel/
+  mv -v .z* /etc/skel/
 fi
 if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
   useradd --skel /etc/skel --shell /bin/bash --groups sudo --user-group --create-home "$SSUSER"
