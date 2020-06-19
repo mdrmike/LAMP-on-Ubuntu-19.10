@@ -1,18 +1,6 @@
 #!/bin/bash
 
-
-if [ "${SSDEBUG,,}" = "yes" ]; then
-  # CREATE LOGFILE, 
-  #   based on https://askubuntu.com/a/1001404/139249
-  exec   > >(tee -ia /root/install.log)
-  exec  2> >(tee -ia /root/install.log >& 2)
-  exec 19> /root/install.log
-  export BASH_XTRACEFD="19"
-  set -x
-fi
-
 [ "${SSH_CFGFILE}" = "" ] && SSH_CFGFILE="stackscript.conf"                     # Set default for ssh_configfile
-
 
 ## Harden SSH
 function harden_ssh() {
@@ -249,8 +237,12 @@ if [ "$SSUSER" != "" ] && [ "$SSUSER" != "root" ]; then
   chmod u+srwX,g=srX,o= "/var/www/html/$FQDN"
   chmod u+srwX,g=srX,o= "/var/www/html/$FQDN/web"
 
-  # Disable root password
-  passwd --lock root
+  
+  ## Disable Root Login
+  if [ "$SSDISABLEROOT" = " yes" ]; then
+    passwd --lock root
+  fi
+  
   # ensure sudo is installed and configure secure user
   apt-get -y install sudo
   # configure ssh key for secure user
@@ -268,13 +260,4 @@ if [ "${SSADMINER,,}" = "yes" ]; then
 fi
 
 
-# === this should be last in the file to esure full log is copied
-cat /root/install.log > /home/$SSUSER/install.log
-chown "$SSUSER:$SSUSER" /home/$SSUSER/install.log
-
-## Disable Root Login
-if [ "$SSDISABLEROOT" = " yes" ]; then
-  passwd --lock root
-fi
-
-shutdown --reboot +1 
+exit 0

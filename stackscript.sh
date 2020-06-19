@@ -1,5 +1,4 @@
 #!/bin/bash
-exec > >(tee -i /var/log/stackscript.log)
 
 # <UDF name="ssuser" Label="New user" example="username" />
 # <UDF name="sspassword" Label="New user password" example="Password" />
@@ -24,7 +23,26 @@ exec > >(tee -i /var/log/stackscript.log)
 # <UDF name="ssadminer" Label="Install Adminer (MySQL Tool)" oneof="yes,no" default="no" example="yes" />
 # <UDF name="sszsh" Label="Install ZSH (and oh-my-zsh)" oneof="yes,no" default="no" example="yes" />
 # <UDF name="ssdebug" Label="Create install.log in home folder?" oneof="yes,no" default="no" example="yes" />
+# <UDF name="ssalt" Label="Alternate install script URL" default="" example="" />
 
-curl -o configure-ubuntu2004.sh -L https://raw.githubusercontent.com/mdrmike/LAMP-on-Ubuntu-20.04/master/lampon2004.sh 
+if [ "$SSALT" != "" ]; then
+  curl -o "/root/configure-ubuntu2004.sh" -L "$SSALT" 
+else
+  curl -o "/root/configure-ubuntu2004.sh" -L https://raw.githubusercontent.com/mdrmike/LAMP-on-Ubuntu-20.04/master/lampon2004.sh 
+fi
 
-source configure-ubuntu2004.sh
+if [ "${SSDEBUG,,}" = "yes" ]; then
+  # CREATE LOGFILE, 
+  #   based on https://askubuntu.com/a/1001404/139249
+  exec 3>&1 4>&2
+  trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
+  exec 1>/root/install.log 2>&1
+
+  bash -xv /root/configure-ubuntu2004.sh
+  # === this should be last in the file to esure full log is copied
+  cat /root/install.log > /root/install.log
+else
+  bash /root/configure-ubuntu2004.sh
+fi
+
+shutdown --reboot +1 
